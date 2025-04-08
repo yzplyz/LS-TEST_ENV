@@ -10,8 +10,9 @@ import { useNavigate } from "react-router-dom";
 import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoibWljaGFlbGxvY3Njb3V0IiwiYSI6ImNtOHA0ZXJqYjA3Z2IybHB1MDVnaHZxd2QifQ.coD8SIKjdfvchSxiKBidDw';
-const GOOGLE_MAPS_API_KEY = "AIzaSyD_dawLbEZuo04y--pvfeWHMiBBYsX7eaI";
+// Correctly access the environment variable using Vite's import.meta.env
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_API_KEY;
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const RESULTS_PER_PAGE = 12;
 

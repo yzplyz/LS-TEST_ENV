@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,8 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-// Google Maps API Key
-const GOOGLE_MAPS_API_KEY = "AIzaSyD_dawLbEZuo04y--pvfeWHMiBBYsX7eaI";
+// Correctly access the environment variable using Vite's import.meta.env
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_API_KEY;
 
 export function StreetView() {
   const location = useLocation();
