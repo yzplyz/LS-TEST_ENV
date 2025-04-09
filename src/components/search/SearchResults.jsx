@@ -14,6 +14,17 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_API_KEY;
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
+// Function to construct Street View static image URL
+const getStreetViewImageUrl = (lat, lng) => {
+  return `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${lat},${lng}&fov=90&heading=0&pitch=0&key=${GOOGLE_MAPS_API_KEY}`;
+};
+
+// Function to handle Street View image error
+const handleStreetViewError = (e) => {
+  console.error('Street View image failed to load');
+  e.target.src = '/placeholder-image.jpg'; // Replace with your placeholder image
+};
+
 const RESULTS_PER_PAGE = 12;
 
 const DEFAULT_VIEW = {
@@ -335,14 +346,10 @@ export function SearchResults({ results = [], onBack, searchQuery = "" }) {
                 {location.coordinates && (
                   <div className="aspect-video relative">
                     <img
-                      src={`https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${location.coordinates.latitude},${location.coordinates.longitude}&key=${GOOGLE_MAPS_API_KEY}&source=outdoor`}
+                      src={getStreetViewImageUrl(location.coordinates.latitude, location.coordinates.longitude)}
                       alt="Location Street View"
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        console.error('Street View image error in results list');
-                        e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/600x400?text=Street+View+Not+Available';
-                      }}
+                      onError={handleStreetViewError}
                     />
                     <Button
                       variant="outline"

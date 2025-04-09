@@ -8,7 +8,7 @@ import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWljaGFlbGxvY3Njb3V0IiwiYSI6ImNtOHA0ZXJqYjA3Z2IybHB1MDVnaHZxd2QifQ.coD8SIKjdfvchSxiKBidDw';
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_API_KEY;
 
 // Add referrer meta tag to head
 const addReferrerTag = () => {
@@ -25,7 +25,7 @@ addReferrerTag();
 
 // Function to construct Street View static image URL
 const getStreetViewImageUrl = (lat, lng) => {
-  return `https://maps.googleapis.com/maps/api/streetview?size=800x600&location=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`;
+  return `https://maps.googleapis.com/maps/api/streetview?size=800x600&location=${lat},${lng}&fov=90&heading=0&pitch=0&key=${GOOGLE_MAPS_API_KEY}`;
 };
 
 // Function to get Google Maps Street View URL
