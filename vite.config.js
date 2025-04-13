@@ -14,53 +14,28 @@ export default defineConfig({
 				target: 'https://locscout-backend.vercel.app',
 				changeOrigin: true,
 				secure: true,
-				rewrite: (path) => path.replace(/^\/api/, ''),
-				configure: (proxy, _options) => {
-					proxy.on('error', (err, _req, _res) => {
-						console.log('Proxy error:', err);
-					});
-					proxy.on('proxyReq', (proxyReq, req, _res) => {
-						console.log('Proxy request:', req.method, req.url);
-					});
-					proxy.on('proxyRes', (proxyRes, req, _res) => {
-						console.log('Proxy response:', proxyRes.statusCode, req.url);
-					});
-				}
+				rewrite: (path) => path.replace(/^\/api/, '')
 			}
 		}
 	},
 	build: {
 		outDir: 'dist',
 		assetsDir: 'assets',
-		sourcemap: false,
-		minify: 'terser',
-		target: 'es2015',
-		cssCodeSplit: true,
-		chunkSizeWarningLimit: 2000,
-		terserOptions: {
-			compress: {
-				drop_console: false,
-				drop_debugger: true
-			}
-		},
+		sourcemap: true,
+		minify: 'esbuild',
+		target: 'esnext',
 		rollupOptions: {
 			output: {
-				entryFileNames: 'assets/[name].[hash].js',
-				chunkFileNames: 'assets/[name].[hash].js',
-				assetFileNames: 'assets/[name].[hash].[ext]',
-				manualChunks: (id) => {
-					if (id.includes('node_modules')) {
-						if (id.includes('@tensorflow/tfjs')) {
-							return 'tensorflow';
-						}
-						if (id.includes('react')) {
-							return 'vendor-react';
-						}
-						if (id.includes('@radix-ui')) {
-							return 'vendor-ui';
-						}
-						return 'vendor';
-					}
+				manualChunks: {
+					vendor: ['react', 'react-dom', 'react-router-dom'],
+					ui: [
+						'@radix-ui/react-dialog',
+						'@radix-ui/react-dropdown-menu',
+						'@radix-ui/react-label',
+						'@radix-ui/react-slot',
+						'@radix-ui/react-tabs',
+						'@radix-ui/react-toast'
+					]
 				}
 			}
 		}
@@ -70,13 +45,5 @@ export default defineConfig({
 		alias: {
 			'@': path.resolve(__dirname, './src'),
 		},
-	},
-	optimizeDeps: {
-		include: [
-			'react',
-			'react-dom',
-			'react-router-dom',
-			'@tensorflow/tfjs'
-		]
 	}
 });
