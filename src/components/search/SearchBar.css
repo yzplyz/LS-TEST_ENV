@@ -1,0 +1,36 @@
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.search-button {
+  min-width: 100px;
+}
+
+.error-message {
+  color: #ff4d4f;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+
+  .search-button {
+    width: 100%;
+  }
+} 
