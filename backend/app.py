@@ -15,7 +15,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5173"],
+        "origins": ["http://localhost:5173", "https://ls-test-9u2h9k6g-chris-projects-9278abaa.vercel.app"],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
@@ -23,7 +23,7 @@ CORS(app, resources={
 
 def handle_preflight():
     response = jsonify({})
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
     return response
@@ -185,7 +185,7 @@ print("LocationSearcher initialized successfully!")
 def search():
     if request.method == 'OPTIONS':
         response = jsonify({})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+        response.headers.add('Access-Control-Allow-Origin', '*')
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
         response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         return response
@@ -215,7 +215,7 @@ def search():
             transformed_results.append(transformed)
         
         response = jsonify({'results': transformed_results})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
     except Exception as e:
@@ -228,7 +228,7 @@ def get_categories():
     try:
         categories = list(searcher.vectors.keys())
         response = jsonify({'categories': categories})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
     except Exception as e:
         print(f"Categories error: {str(e)}")

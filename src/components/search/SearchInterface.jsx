@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import SearchResults from "./SearchResults";
 import { MainNav } from "@/components/layout/MainNav";
 import { SemanticSearch } from "@/lib/semanticSearch";
+import { API_URL } from "@/config";
 
 export function SearchInterface() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,7 +46,7 @@ export function SearchInterface() {
     setIsSearching(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/search', {
+      const response = await fetch(`${API_URL}/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
