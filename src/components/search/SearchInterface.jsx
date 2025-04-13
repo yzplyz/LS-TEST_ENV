@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { SearchResults } from "./SearchResults";
+import SearchResults from "./SearchResults";
 import { MainNav } from "@/components/layout/MainNav";
 import { SemanticSearch } from "@/lib/semanticSearch";
 
@@ -45,8 +45,26 @@ export function SearchInterface() {
     setIsSearching(true);
 
     try {
-      const results = await semanticSearch.current.search(searchQuery.trim());
-      setSearchResults(results);
+      const response = await fetch('http://localhost:5000/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: searchQuery.trim(),
+          top_k: 10,
+          threshold: 0.4
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Search response:', data);
+      setSearchResults(data);
+      setIsSearching(false);
     } catch (error) {
       console.error("Search error:", error);
       toast({
@@ -55,7 +73,6 @@ export function SearchInterface() {
         variant: "destructive",
       });
       setSearchResults(null);
-    } finally {
       setIsSearching(false);
     }
   };

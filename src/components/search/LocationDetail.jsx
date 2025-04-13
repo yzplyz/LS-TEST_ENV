@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Crown, MapPin, Share2, Copy, Eye, Heart, Plus, Check } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Crown, MapPin, Share2, Copy, Eye, Heart, Plus, Check, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { FolderSelectionDialog } from "@/components/folders/FolderSelectionDialog";
@@ -25,12 +25,14 @@ addReferrerTag();
 
 // Function to construct Street View static image URL
 const getStreetViewImageUrl = (lat, lng) => {
+  if (!lat || !lng) return '/placeholder-image.jpg';
   return `https://maps.googleapis.com/maps/api/streetview?size=800x600&location=${lat},${lng}&fov=90&heading=0&pitch=0&key=${GOOGLE_MAPS_API_KEY}`;
 };
 
 // Function to get Google Maps Street View URL
 const getGoogleMapsUrl = (lat, lng) => {
-  return `https://www.google.com/maps/@${lat},${lng},3a,75y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`;
+  if (!lat || !lng) return null;
+  return `https://www.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}&cbp=12,0,0,0,0`;
 };
 
 export function LocationDetail({ location, open, onOpenChange }) {
@@ -162,10 +164,19 @@ export function LocationDetail({ location, open, onOpenChange }) {
     });
   };
 
-  const handleCopyCoordinates = () => {
-    navigator.clipboard.writeText(`${lat}, ${lng}`);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+  const handleCopyCoordinates = async () => {
+    if (!location || !location.coordinates) return;
+    try {
+      await navigator.clipboard.writeText(`${location.coordinates.latitude.toFixed(6)}, ${location.coordinates.longitude.toFixed(6)}`);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+      toast({
+        title: "Coordinates copied",
+        description: "Location coordinates have been copied to clipboard",
+      });
+    } catch (err) {
+      console.error('Failed to copy coordinates:', err);
+    }
   };
 
   const handleShare = () => {
@@ -177,10 +188,26 @@ export function LocationDetail({ location, open, onOpenChange }) {
 
   if (!location) return null;
 
+  const streetViewUrl = getStreetViewImageUrl(lat, lng);
+  const googleMapsUrl = getGoogleMapsUrl(lat, lng);
+
+  const handleImageError = (e) => {
+    console.error('Street View image failed to load');
+    e.target.src = '/placeholder-image.jpg';
+  };
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Location Details</span>
+              <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
           <div className="relative w-full aspect-video">
             <Map
               mapboxAccessToken={MAPBOX_TOKEN}
@@ -208,7 +235,7 @@ export function LocationDetail({ location, open, onOpenChange }) {
                 <span>{location.address || "Location"}</span>
               </div>
               <p className="text-muted-foreground">
-                Coordinates: {lat}, {lng}
+                Coordinates: {lat.toFixed(6)}, {lng.toFixed(6)}
               </p>
               <p className="text-muted-foreground">
                 {location.distance ? `${location.distance.toFixed(1)} miles away` : 'Distance unknown'}
