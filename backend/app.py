@@ -13,17 +13,12 @@ import re
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/api/*": {
-        "origins": [
-            "http://localhost:5173",
-            "https://ls-test-9u2h9k6g-chris-projects-9278abaa.vercel.app",
-            "https://locscout.vercel.app"
-        ],
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-    }
-})
+CORS(app, 
+     origins="*",
+     allow_credentials=True,
+     allow_headers=["Content-Type", "Authorization", "Accept"],
+     expose_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "OPTIONS"])
 
 def handle_preflight():
     response = jsonify({})

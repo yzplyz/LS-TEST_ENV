@@ -50,19 +50,26 @@ export function SearchInterface() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
           query: searchQuery.trim(),
           top_k: 10,
           threshold: 0.4
         }),
+        credentials: 'include'
       });
 
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `Search failed: ${response.statusText}`);
       }
 
       const data = await response.json();
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid response format');
+      }
+      
       console.log('Search response:', data);
       setSearchResults(data);
       setIsSearching(false);
@@ -70,7 +77,7 @@ export function SearchInterface() {
       console.error("Search error:", error);
       toast({
         title: "Search failed",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
         variant: "destructive",
       });
       setSearchResults(null);
