@@ -32,19 +32,35 @@ export default defineConfig({
 	build: {
 		outDir: 'dist',
 		assetsDir: 'assets',
+		sourcemap: false,
+		minify: 'terser',
+		target: 'es2015',
+		cssCodeSplit: true,
+		chunkSizeWarningLimit: 2000,
+		terserOptions: {
+			compress: {
+				drop_console: false,
+				drop_debugger: true
+			}
+		},
 		rollupOptions: {
 			output: {
-				manualChunks: {
-					vendor: ['react', 'react-dom', 'react-router-dom'],
-					tensorflow: ['@tensorflow/tfjs'],
-					ui: [
-						'@radix-ui/react-dialog',
-						'@radix-ui/react-dropdown-menu',
-						'@radix-ui/react-label',
-						'@radix-ui/react-slot',
-						'@radix-ui/react-tabs',
-						'@radix-ui/react-toast'
-					]
+				entryFileNames: 'assets/[name].[hash].js',
+				chunkFileNames: 'assets/[name].[hash].js',
+				assetFileNames: 'assets/[name].[hash].[ext]',
+				manualChunks: (id) => {
+					if (id.includes('node_modules')) {
+						if (id.includes('@tensorflow/tfjs')) {
+							return 'tensorflow';
+						}
+						if (id.includes('react')) {
+							return 'vendor-react';
+						}
+						if (id.includes('@radix-ui')) {
+							return 'vendor-ui';
+						}
+						return 'vendor';
+					}
 				}
 			}
 		}
@@ -55,4 +71,12 @@ export default defineConfig({
 			'@': path.resolve(__dirname, './src'),
 		},
 	},
+	optimizeDeps: {
+		include: [
+			'react',
+			'react-dom',
+			'react-router-dom',
+			'@tensorflow/tfjs'
+		]
+	}
 });

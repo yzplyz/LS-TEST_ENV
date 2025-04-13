@@ -11,16 +11,33 @@
   ],
   "routes": [
     {
-      "src": "^/assets/(.*)\\.js$",
+      "src": "/assets/(.*)",
       "headers": {
-        "Content-Type": "application/javascript"
+        "cache-control": "public, max-age=31536000, immutable"
       },
       "continue": true
     },
     {
-      "src": "^/assets/(.*)\\.mjs$",
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)\\.js$",
       "headers": {
-        "Content-Type": "application/javascript"
+        "Content-Type": "application/javascript; charset=utf-8"
+      },
+      "continue": true
+    },
+    {
+      "src": "/(.*)\\.mjs$", 
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8"
+      },
+      "continue": true
+    },
+    {
+      "src": "/(.*)\\.css$",
+      "headers": {
+        "Content-Type": "text/css; charset=utf-8"
       },
       "continue": true
     },
