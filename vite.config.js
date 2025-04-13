@@ -29,6 +29,26 @@ export default defineConfig({
 			}
 		}
 	},
+	build: {
+		outDir: 'dist',
+		assetsDir: 'assets',
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					vendor: ['react', 'react-dom', 'react-router-dom'],
+					tensorflow: ['@tensorflow/tfjs'],
+					ui: [
+						'@radix-ui/react-dialog',
+						'@radix-ui/react-dropdown-menu',
+						'@radix-ui/react-label',
+						'@radix-ui/react-slot',
+						'@radix-ui/react-tabs',
+						'@radix-ui/react-toast'
+					]
+				}
+			}
+		}
+	},
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json'],
 		alias: {
